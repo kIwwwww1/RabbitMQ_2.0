@@ -22,11 +22,11 @@ def process_new_message(
 
     logger.info(f"Сообщение обработано {body}")
 
+    ch.basic_ack(delivery_tag=method.delivery_tag)
+
 
 def consume_message(channel: "BlockingChannel") -> None:
-    channel.basic_consume(
-        queue=MQ_ROUTING_KEY, on_message_callback=process_new_message, auto_ack=True
-    )
+    channel.basic_consume(queue=MQ_ROUTING_KEY, on_message_callback=process_new_message)
     logger.info("Ждем сообщения")
     channel.start_consuming()
 
