@@ -17,23 +17,27 @@ def process_new_message(
     body: bytes,
 ):
     start = time.time()
-    logger.warning(f"Данные {ch}")
-    logger.warning(f"Данные {method}")
-    logger.warning(f"Данные {properties}")
+    # logger.warning(f"Данные {ch}")
+    # logger.warning(f"Данные {method}")
+    # logger.warning(f"Данные {properties}")
     # logger.info(f"Данные {body}")
+
+    number = int(body[-2:])
+    is_odd = number % 2
+
+    time.sleep(1 + is_odd * 2)
+
     end = time.time() - start
-
-    time.sleep(0.5)
-
     logger.info(f"Сообщение обработано {body.decode()} за {end:05f}")
-    # ch.basic_ack(delivery_tag=method.delivery_tag)
+    ch.basic_ack(delivery_tag=method.delivery_tag)
 
 
 def consume_message(channel: "BlockingChannel") -> None:
+    channel.basic_qos(prefetch_count=1)
     channel.basic_consume(
         queue=MQ_ROUTING_KEY,
         on_message_callback=process_new_message,
-        auto_ack=True,
+        # auto_ack=True,
     )
     logger.info("Ждем сообщения")
     channel.start_consuming()

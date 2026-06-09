@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 def produce_message(channel: "BlockingChannel", idx: int) -> None:
     queue = channel.queue_declare(queue=MQ_ROUTING_KEY)
     logger.info(f"Обявление очереди {MQ_ROUTING_KEY}, {queue},{time.time()}")
-    message = f"Новое сообщение #{idx:02d} Hello World! {time.time()}"
+    message = f"Hello World! {time.time()}, Новое сообщение #{idx:02d}"
     logger.info(f"Отправка {message}")
     channel.basic_publish(
         exchange=MQ_EXCHANGE,
@@ -34,7 +34,7 @@ def main():
             declare_queue(channel=channel)
             for idx in range(1, 11):
                 produce_message(channel=channel, idx=idx)
-                time.sleep(2)
+                time.sleep(0.5)
 
 
 if __name__ == "__main__":
