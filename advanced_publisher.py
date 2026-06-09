@@ -9,10 +9,10 @@ if TYPE_CHECKING:
     from pika.adapters.blocking_connection import BlockingChannel
 
 
-def produce_message(channel: "BlockingChannel") -> None:
+def produce_message(channel: "BlockingChannel", idx: int) -> None:
     queue = channel.queue_declare(queue=MQ_ROUTING_KEY)
     logger.info(f"Обявление очереди {MQ_ROUTING_KEY}, {queue},{time.time()}")
-    message = f"Hello World! {time.time()}"
+    message = f"Новое сообщение #{idx:02d} Hello World! {time.time()}"
     logger.info(f"Отправка {message}")
     channel.basic_publish(
         exchange=MQ_EXCHANGE,
@@ -21,13 +21,20 @@ def produce_message(channel: "BlockingChannel") -> None:
     )
 
 
+def declare_queue(channel: "BlockingChannel") -> None:
+    channel.queue_declare(queue=MQ_ROUTING_KEY)
+
+
 def main():
     send_log("Запуск")
     with get_connection() as connection:
         logger.info(f"Создали соединение {connection}")
         with connection.channel() as channel:
             logger.info(f"Создали канала {channel}")
-            produce_message(channel=channel)
+            declare_queue(channel=channel)
+            for idx in range(1, 11):
+                produce_message(channel=channel, idx=idx)
+                time.sleep(2)
 
 
 if __name__ == "__main__":

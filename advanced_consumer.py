@@ -1,3 +1,4 @@
+import time
 from typing import TYPE_CHECKING
 
 from loguru import logger
@@ -15,18 +16,25 @@ def process_new_message(
     properties: "BasicProperties",
     body: bytes,
 ):
-    logger.info(f"Данные {ch}")
-    logger.info(f"Данные {method}")
-    logger.info(f"Данные {properties}")
-    logger.info(f"Данные {body}")
+    start = time.time()
+    logger.warning(f"Данные {ch}")
+    logger.warning(f"Данные {method}")
+    logger.warning(f"Данные {properties}")
+    # logger.info(f"Данные {body}")
+    end = time.time() - start
 
-    logger.info(f"Сообщение обработано {body}")
+    time.sleep(0.5)
 
-    ch.basic_ack(delivery_tag=method.delivery_tag)
+    logger.info(f"Сообщение обработано {body.decode()} за {end:05f}")
+    # ch.basic_ack(delivery_tag=method.delivery_tag)
 
 
 def consume_message(channel: "BlockingChannel") -> None:
-    channel.basic_consume(queue=MQ_ROUTING_KEY, on_message_callback=process_new_message)
+    channel.basic_consume(
+        queue=MQ_ROUTING_KEY,
+        on_message_callback=process_new_message,
+        auto_ack=True,
+    )
     logger.info("Ждем сообщения")
     channel.start_consuming()
 
