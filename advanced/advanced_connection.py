@@ -10,6 +10,8 @@ RMQ_PASSWORD = "guest"
 MQ_EXCHANGE = ""
 MQ_ROUTING_KEY = "hello"
 
+MQ_EMAIL_UPDATES_EXCHANGE_NAME = "email-updates"
+
 connections_params = pika.ConnectionParameters(
     host=RMQ_HOST,
     port=RMQ_PORT,
