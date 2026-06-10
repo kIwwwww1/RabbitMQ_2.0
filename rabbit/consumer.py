@@ -3,7 +3,8 @@ from typing import TYPE_CHECKING
 
 from loguru import logger
 
-from advanced_connection import MQ_ROUTING_KEY, get_connection, send_log
+from advanced.advanced_connection import MQ_ROUTING_KEY, send_log
+from rabbit import RabbitBase
 
 if TYPE_CHECKING:
     from pika.adapters.blocking_connection import BlockingChannel
@@ -34,6 +35,7 @@ def process_new_message(
 
 def consume_message(channel: "BlockingChannel") -> None:
     channel.basic_qos(prefetch_count=1)
+    channel.queue_declare(MQ_ROUTING_KEY)
     channel.basic_consume(
         queue=MQ_ROUTING_KEY,
         on_message_callback=process_new_message,
@@ -44,12 +46,8 @@ def consume_message(channel: "BlockingChannel") -> None:
 
 
 def main():
-    send_log("Запуск")
-    with get_connection() as connection:
-        logger.info(f"Создали соединение {connection}")
-        with connection.channel() as channel:
-            logger.info(f"Создали канала {channel}")
-            consume_message(channel=channel)
+    with RabbitBase() as rabbit:
+        consume_message(channel=rabbit.channel)
 
 
 if __name__ == "__main__":

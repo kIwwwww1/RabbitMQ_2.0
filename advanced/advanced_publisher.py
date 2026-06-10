@@ -3,7 +3,12 @@ from typing import TYPE_CHECKING
 
 from loguru import logger
 
-from advanced_connection import MQ_EXCHANGE, MQ_ROUTING_KEY, get_connection, send_log
+from advanced.advanced_connection import (
+    MQ_EXCHANGE,
+    MQ_ROUTING_KEY,
+    get_connection,
+    send_log,
+)
 
 if TYPE_CHECKING:
     from pika.adapters.blocking_connection import BlockingChannel
