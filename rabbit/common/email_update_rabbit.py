@@ -29,7 +29,7 @@ class EmailUpdatesRabbitMixin:
         self.declare_email_updates_exchange()
         queue = self.channel.queue_declare(
             queue=queue_name,
-            exclusive=exclusive,
+            exclusive=not queue_name,
         )
         q_name = queue.method.queue
         self.channel.queue_bind(

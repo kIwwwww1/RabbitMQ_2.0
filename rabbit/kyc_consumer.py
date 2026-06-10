@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 from loguru import logger
 
-from advanced.advanced_connection import send_log
+from advanced.advanced_connection import MQ_EMAIL_NAME_KYC_EMAIL_UPDATES, send_log
 from rabbit.common import EmailUpdatesRabbit
 
 if TYPE_CHECKING:
@@ -38,7 +38,10 @@ def process_new_message(
 
 def main():
     with EmailUpdatesRabbit() as rabbit:
-        rabbit.consume_messages(message_callback=process_new_message)
+        rabbit.consume_messages(
+            message_callback=process_new_message,
+            queue_name=MQ_EMAIL_NAME_KYC_EMAIL_UPDATES,
+        )
 
 
 if __name__ == "__main__":

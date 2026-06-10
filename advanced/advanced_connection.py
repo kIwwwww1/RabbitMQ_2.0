@@ -11,6 +11,8 @@ MQ_EXCHANGE = ""
 MQ_ROUTING_KEY = "hello"
 
 MQ_EMAIL_UPDATES_EXCHANGE_NAME = "email-updates"
+MQ_EMAIL_NAME_KYC_EMAIL_UPDATES = "kyc-email-updates"
+MQ_EMAIL_NAME_NEWSLETTER_EMAIL_UPDATES = "newsletter-email-updates"
 
 connections_params = pika.ConnectionParameters(
     host=RMQ_HOST,
