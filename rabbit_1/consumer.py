@@ -33,9 +33,9 @@ def process_new_message(
     end = time.time() - start
     if random.random() > 0.7:
         logger.info(
-            f"--- NACK! не обработано Сообщение обработано (no requeue) {body.decode()}"
+            f"--- NACK! не обработано Сообщение обработано (reject) {body.decode()}"
         )
-        ch.basic_nack(delivery_tag=method.delivery_tag, requeue=False)
+        ch.basic_reject(delivery_tag=method.delivery_tag, requeue=True)
     else:
         logger.info(f"+++ Сообщение обработано {body.decode()} за {end:05f}")
         ch.basic_ack(delivery_tag=method.delivery_tag)
